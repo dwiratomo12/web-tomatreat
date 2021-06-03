@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Deeplizard predict image app</title>
+    <style>
+        * {
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <input id="image-selector" type="file">
+    <button id="predict-button">Predict</button>
+    <p style="font-weight:bold">Predictions</p>
+    <p>Tomato___Bacterial_spot: <span id="satu-prediction"></span></p>
+    <p>Tomato___Early_blight: <span id="dua-prediction"></span></p>
+    <p>Tomato___Late_blight: <span id="tiga-prediction"></span></p>
+    <p>Tomato___Leaf_Mold: <span id="empat-prediction"></span></p>
+    <p>Tomato___Septoria_leaf_spot: <span id="lima-prediction"></span></p>
+    <p>Tomato___Spider_mites: <span id="enam-prediction"></span></p>
+    <p>Tomato___Target_Spot: <span id="tujuh-prediction"></span></p>
+    <p>Tomato___Tomato_Yellow_Leaf_Curl_Virus: <span id="delapan-prediction"></span></p>
+    <p>Tomato___Tomato_mosaic_virus: <span id="sembilan-prediction"></span></p>
+    <p>Tomato___Healthy: <span id="sepuluh-prediction"></span></p>
+   
+    <img id="selected-image" src=""/>
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        let base64Image;
+        $("#image-selector").change(function() {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let dataURL = reader.result;
+                $('#selected-image').attr("src", dataURL);
+                base64Image = dataURL.replace("data:image/png;base64,","");
+                console.log(base64Image);
+            }
+            reader.readAsDataURL($("#image-selector")[0].files[0]);
+            $("#satu-prediction").text("");
+            $("#dua-prediction").text("");
+            $("#tiga-prediction").text("");
+            $("#empat-prediction").text("");
+            $("#lima-prediction").text("");
+            $("#enam-prediction").text("");
+            $("#tujuh-prediction").text("");
+            $("#delapan-prediction").text("");
+            $("#sembilan-prediction").text("");
+            $("#sepuluh-prediction").text("");
+        });
+        
+        $("#predict-button").click(function(event){
+            let message = {
+                image: base64Image
+            }
+            console.log(message);
+            $.post("http://localhost:5000/leafpredict", JSON.stringify(message), function(response){
+                $("#satu-prediction").text(response.prediction.satu.toFixed(6));
+                $("#dua-prediction").text(response.prediction.dua.toFixed(6));
+                $("#tiga-prediction").text(response.prediction.tiga.toFixed(6));
+                $("#empat-prediction").text(response.prediction.empat.toFixed(6));
+                $("#lima-prediction").text(response.prediction.lima.toFixed(6));
+                $("#enam-prediction").text(response.prediction.enam.toFixed(6));
+                $("#tujuh-prediction").text(response.prediction.tujuh.toFixed(6));
+                $("#delapan-prediction").text(response.prediction.delapan.toFixed(6));
+                $("#sembilan-prediction").text(response.prediction.sembilan.toFixed(6));
+                $("#sepuluh-prediction").text(response.prediction.sepuluh.toFixed(6));
+                console.log(response);
+            });
+        }); 
+    </script>
+</body>
+</html>
