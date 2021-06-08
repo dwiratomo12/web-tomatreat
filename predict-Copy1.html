@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>TomaTreat</title>
+    <!-- add icon link -->
+    <link rel = "icon" href="tomatreat.png" type = "image/x-icon">
+    <style>
+        * {
+            font-size: 15px;
+        }
+        .margin {margin-top: 120px;}
+        .mg-b {margin-bottom: 50px;}
+        .box {
+            margin-top: -32px;
+            height: 15px;
+            width: 130px;
+        }
+        .red {background-color: rgba(201, 18, 3, 0.3);}
+        .footer-top {
+            padding: 40px 0;
+        }
+        .segment ul {
+		list-style: none;
+        }
+        .segment li {
+            padding: 5px 0px;
+        }
+        .row {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3 fixed-top shadow border-0">
+            <div class="container">
+                <a class="navbar-brand" href="#"><img src="tomatreat.png" height="50" alt="CoolBrand">  <strong style="font-size: 25px; color: #c9120d;">TomaTreat</strong></a>
+            </div>
+            </nav>
+      </div>
+    <div class="container" style="margin-top: 170px; margin-bottom: 150px;">
+        <h2 class="text-center margin mx-auto">Detect Your Tomato Plant Disease Now</h2>
+        <p class="text-center mx-auto mg-b">by taking pictures of your tomato leaves</p>
+        
+        <div class="card w-50 mx-auto shadow border-0 p-3" style="background-color: rgba(16, 179, 8, 0.3);">
+        
+            <div class="input-group mb-3">
+                <input type="file" class="form-control" placeholder="Recipient's username" id="image-selector">
+                <div class="input-group-append">
+                <button class="btn btn-success" type="button" id="predict-button">Predict</button>
+                </div>
+            </div>
+            <img class="rounded mx-auto d-block" id="selected-image" src=""/>
+        </div>
+        <h4 class="mx-auto text-center" style="margin-top: 100px; margin-bottom: 25px;">Prediction Result</h4>
+        <div class="box red mb-4 mx-auto"></div>
+        <div class="d-flex mx-auto shadow border-0 bg-light" style="width: 77%;">
+            <div class="bd-highlight">
+                <table class="m-5 table table  table-borderless border-0">
+                    <tr>
+                        <td>Tomato___Bacterial_spot</td>
+                        <td id="satu-prediction"></td>
+                    </tr>
+                    <tr>
+                        <td>Tomato___Early_blight</td>
+                        <td id="dua-prediction"></td>
+                    </tr>
+                    <tr>
+                        <td>Tomato___Late_blight</td>
+                        <td id="tiga-prediction"></td>
+                    </tr>
+                    <tr>
+                        <td>Tomato___Leaf_Mold</td>
+                        <td id="empat-prediction"></td>
+                    </tr>
+                    <tr>
+                        <td>Tomato___Septoria_leaf_spot</td>
+                        <td id="lima-prediction"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="bd-highlight">
+                <table class="m-5 table table  table-borderless border-0">
+                <tr>
+                    <td>Tomato___Spider_mites:</td>
+                    <td id="enam-prediction"></td>
+                </tr>
+                <tr>
+                    <td>Tomato___Target_Spot</td>
+                    <td id="tujuh-prediction"></td>
+                </tr>
+                <tr>
+                    <td>Tomato___Tomato_Yellow_Leaf_Curl_Virus</td>
+                    <td id="delapan-prediction"></td>
+                </tr>
+                <tr>
+                    <td>Tomato___Tomato_mosaic_virus</td>
+                    <td id="sembilan-prediction"></td>
+                </tr>
+                <tr>
+                    <td>Tomato___Healthy</td>
+                    <td id="sepuluh-prediction"></td>
+                </tr>
+            </table>
+            </div>
+        </div>
+    
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+            let base64Image;
+            $("#image-selector").change(function() {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let dataURL = reader.result;
+                    $('#selected-image').attr("src", dataURL);
+                    base64Image = dataURL.replace("data:image/png;base64,","");
+                    console.log(base64Image);
+                }
+                reader.readAsDataURL($("#image-selector")[0].files[0]);
+                $("#satu-prediction").text("");
+                $("#dua-prediction").text("");
+                $("#tiga-prediction").text("");
+                $("#empat-prediction").text("");
+                $("#lima-prediction").text("");
+                $("#enam-prediction").text("");
+                $("#tujuh-prediction").text("");
+                $("#delapan-prediction").text("");
+                $("#sembilan-prediction").text("");
+                $("#sepuluh-prediction").text("");
+            });
+            
+            $("#predict-button").click(function(event){
+                let message = {
+                    image: base64Image
+                }
+                console.log(message);
+                $.post("http://localhost:5000/leafpredict", JSON.stringify(message), function(response){
+                    $("#satu-prediction").text(response.prediction.satu.toFixed(3));
+                    $("#dua-prediction").text(response.prediction.dua.toFixed(3));
+                    $("#tiga-prediction").text(response.prediction.tiga.toFixed(3));
+                    $("#empat-prediction").text(response.prediction.empat.toFixed(3));
+                    $("#lima-prediction").text(response.prediction.lima.toFixed(3));
+                    $("#enam-prediction").text(response.prediction.enam.toFixed(3));
+                    $("#tujuh-prediction").text(response.prediction.tujuh.toFixed(3));
+                    $("#delapan-prediction").text(response.prediction.delapan.toFixed(3));
+                    $("#sembilan-prediction").text(response.prediction.sembilan.toFixed(3));
+                    $("#sepuluh-prediction").text(response.prediction.sepuluh.toFixed(3));
+                    console.log(response);
+                });
+            }); 
+        </script>
+    </div>
+    <footer>
+        <div class="footer-top bg-light">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6  segment" style="text-align: center;"> 
+                <ul class="" style="display: inline-block; text-align: left;">
+                  <h2 class="" style="display: inline-block; text-align: left;">Our-Team</h2>
+                  <p>B21-CAP0228</p>
+                  <div class="d-flex mx-auto">
+                    <div class="bd-highlight">
+                        <tr>
+                            <td><li>M2952663<strong> Sylviana Murni</strong></li></td>
+                        </tr>
+                        <tr>
+                            <td><li>C2952662<strong> M. Nauval Rifkiansyah</strong></li></td>
+                        </tr>
+                        <tr>
+                            <td><li>A0050456<strong> Edbert Wicohen</strong></li></td>
+                        </tr>
+                    </div>
+                   <div class="bd-highlight" style="margin-left: 20px;">
+                        <tr>
+                            <td><li>M2952664<strong> Yulia Astutik</strong></li></td>
+                        </tr>
+                        <tr>
+                            <td><li>C2952665<strong> Dwi Setyo Wiratomo</strong></li></td>
+                        </tr>
+                        <tr>
+                            <td><li>A0090935<strong> M. Fachry Ramadhan </strong></li></td>
+                        </tr>
+                   </div>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h2>Special Thanks to</h2>
+                <img src="bangkit logo.png" height="150">
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+</body>
+</html>
