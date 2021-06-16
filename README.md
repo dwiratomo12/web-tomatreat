@@ -1,7 +1,6 @@
-# web-tomatreat
+# DOCUMENTATION
 Web app for __Classification Leaf Tomato Disease Using CNN__
 
-**Documentation**
 For using this web, clone this repo and extract the file. and then follow this step :
 1. this project will using python 3.8 above so install that version
 2. install pip
